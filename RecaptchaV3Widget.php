@@ -13,6 +13,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\InputWidget;
 
 class RecaptchaV3Widget extends InputWidget
@@ -53,6 +54,7 @@ class RecaptchaV3Widget extends InputWidget
     }
 
 
+
     /**
      * @inheritdoc
      */
@@ -65,28 +67,28 @@ class RecaptchaV3Widget extends InputWidget
         $callbackRandomString = time();
 
         $options = array_merge([
-            'onClick' => "recaptchaCallback_{$callbackRandomString}()"
+            //  'onClick' => "recaptchaCallback_{$callbackRandomString}()"
         ], $this->options);
 
 
-        return
-            Html::tag('script', <<<JS
-             var recaptchaCallback_{$callbackRandomString} = function() {
-                  if(!$('#{$inputId}').val()){
-                      grecaptcha.ready(function() {
-                          grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
-                              alert(token);
-                              $('#{$inputId}').val(token);
-                              $('#{$formId}').submit();
-                          });
-                     });
-                  }else{
-                        $('#{$formId}').submit();
-                  }
-              }
+        $this->view->registerJs(<<<JS
+ $('#{$formId}').on('beforeSubmit',function(){
+           if(!$('#{$inputId}').val()){
+               grecaptcha.ready(function() {
+                   grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
+                       $('#{$inputId}').val(token);
+                       $('#{$formId}').submit();
+                   });
+               });
+               return true;
+            }else{
+               return false;
+            }
+ });
 JS
-            )
-            . Html::activeHiddenInput($this->model, $this->attribute)
-            . Html::button($this->buttonText, $options);
+            ,View::POS_READY);
+        return
+
+            Html::activeHiddenInput($this->model, $this->attribute,['value'=>'']);
     }
 }
