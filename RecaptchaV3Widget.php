@@ -53,7 +53,6 @@ class RecaptchaV3Widget extends InputWidget
     }
 
 
-
     /**
      * @inheritdoc
      */
@@ -73,17 +72,21 @@ class RecaptchaV3Widget extends InputWidget
         return
             Html::tag('script', <<<JS
              var recaptchaCallback_{$callbackRandomString} = function() {
-                  grecaptcha.ready(function() {
-                      grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
-                          alert(token);
-                          $('#{$inputId}').val(token);
-                          $('#{$formId}').submit();
-                      });
-                 });
+                  if(!$('#{$inputId}').val()){
+                      grecaptcha.ready(function() {
+                          grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
+                              alert(token);
+                              $('#{$inputId}').val(token);
+                              $('#{$formId}').submit();
+                          });
+                     });
+                  }else{
+                        $('#{$formId}').submit();
+                  }
               }
 JS
             )
             . Html::activeHiddenInput($this->model, $this->attribute)
-            . Html::button($this->buttonText, $this->options);
+            . Html::button($this->buttonText, $options);
     }
 }
