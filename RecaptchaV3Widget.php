@@ -63,16 +63,24 @@ class RecaptchaV3Widget extends InputWidget
         $this->field->template = "{input}\n{error}";
         $formId = $this->field->form->id;
         $inputId = Html::getInputId($this->model, $this->attribute);
+        $callbackRandomString = time();
+
+        $options = array_merge([
+            'onClick' => "recaptchaCallback_{$callbackRandomString}()"
+        ], $this->options);
+
 
         return
             Html::tag('script', <<<JS
-              grecaptcha.ready(function() {
-                  grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
-                      alert(token);
-                      $('#{$inputId}').val(token);
-                      $('#{$formId}').submit();
-                  });
-             });
+             var recaptchaCallback_{$callbackRandomString} = function() {
+                  grecaptcha.ready(function() {
+                      grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
+                          alert(token);
+                          $('#{$inputId}').val(token);
+                          $('#{$formId}').submit();
+                      });
+                 });
+              }
 JS
             )
             . Html::activeHiddenInput($this->model, $this->attribute)
