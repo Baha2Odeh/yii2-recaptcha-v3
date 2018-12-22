@@ -72,6 +72,12 @@ class RecaptchaV3Widget extends InputWidget
 
 
         $this->view->registerJs(<<<JS
+
+         grecaptcha.ready(function() {
+                   grecaptcha.execute('{$this->_component->site_key}', {action: '{$this->actionName}'}).then(function(token) {
+                       $('#{$inputId}').val(token);
+                   });
+         });
  $('#{$formId}').on('beforeSubmit',function(){
            if(!$('#{$inputId}').val()){
                grecaptcha.ready(function() {
@@ -80,9 +86,9 @@ class RecaptchaV3Widget extends InputWidget
                        $('#{$formId}').submit();
                    });
                });
-               return true;
-            }else{
                return false;
+            }else{
+               return true;
             }
  });
 JS

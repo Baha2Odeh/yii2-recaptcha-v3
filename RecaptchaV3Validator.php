@@ -30,7 +30,7 @@ class RecaptchaV3Validator extends Validator
 
 
     /**
-     * the score for this request (0.0 - 1.0)
+     * the minimum score for this request (0.0 - 1.0)
      * @var null|int
      */
     public $acceptance_score = null;
@@ -62,7 +62,6 @@ class RecaptchaV3Validator extends Validator
      */
     protected function validateValue($value)
     {
-
         $result = $this->_component->validateValue($value);
         if($result === false){
             return [$this->message, []];

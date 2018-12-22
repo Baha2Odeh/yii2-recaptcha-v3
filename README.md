@@ -27,5 +27,36 @@ Usage
 
 Once the extension is installed, simply use it in your code by  :
 
+add this to your components main.php
+
 ```php
-<?= \Baha2Odeh\RecaptchaV3\AutoloadExample::widget(); ?>```
+'components' => [
+        ...
+        'recaptchaV3' => [
+            'class' => 'Baha2Odeh\RecaptchaV3\RecaptchaV3',
+            'site_key' => '###',
+            'secret_key' => '###',
+        ],
+
+```
+
+and in your model
+
+acceptance_score the minimum score for this request (0.0 - 1.0) or null
+
+```php
+public $code;
+ 
+ public function rules(){
+ 	return [
+ 		...
+ 		 [['code'],RecaptchaV3Validator::className(),'acceptance_score'=>null]
+ 	];
+    }
+```
+
+```php
+   <?= $form->field($model,'code')->widget(\Baha2Odeh\RecaptchaV3\RecaptchaV3Widget::className());
+```
+
+
