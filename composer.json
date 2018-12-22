@@ -1,0 +1,21 @@
+{
+    "name": "baha2odeh/yii2-recaptcha-v3",
+    "description": "Yii2 reCAPTCHA v3",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","recaptcha v3","captcha"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Bahaa Odeh",
+            "email": "bw4@hotmail.it"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Baha2Odeh\\RecaptchaV3\\": ""
+        }
+    }
+}
