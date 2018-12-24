@@ -2,7 +2,7 @@
     "name": "baha2odeh/yii2-recaptcha-v3",
     "description": "Yii2 reCAPTCHA v3",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","recaptcha v3","captcha","recaptcha 3","Yii2 recaptcha",,"Yii2 recaptcha 3","Yii2 recaptcha v3"],
+    "keywords": ["yii2","extension","recaptcha v3","captcha","recaptcha 3","Yii2 recaptcha","Yii2 recaptcha 3","Yii2 recaptcha v3"],
     "license": "Apache-2.0",
     "authors": [
         {
