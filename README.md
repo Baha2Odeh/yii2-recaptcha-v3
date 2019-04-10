@@ -50,13 +50,13 @@ public $code;
  public function rules(){
  	return [
  		...
- 		 [['code'],RecaptchaV3Validator::className(),'acceptance_score'=>null]
+ 		 [['code'], RecaptchaV3Validator::className(), 'acceptance_score' => null]
  	];
     }
 ```
 
 ```php
-   <?= $form->field($model,'code')->widget(\Baha2Odeh\RecaptchaV3\RecaptchaV3Widget::className());
+   <?= $form->field($model,'code')->widget(\Baha2Odeh\RecaptchaV3\RecaptchaV3Widget::className()); ?>
 ```
 
 
