@@ -36,6 +36,7 @@ add this to your components main.php
             'class' => 'Baha2Odeh\RecaptchaV3\RecaptchaV3',
             'site_key' => '###',
             'secret_key' => '###',
+            'verify_ssl' => true, // default is true
         ],
 
 ```
