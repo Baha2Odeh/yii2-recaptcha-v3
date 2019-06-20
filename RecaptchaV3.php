@@ -18,6 +18,7 @@ class RecaptchaV3 extends Component
 {
     public $site_key = null;
     public $secret_key = null;
+    public $verify_ssl = true;
 
     private $verify_endpoint = 'https://www.google.com/recaptcha/api/siteverify';
 
@@ -77,6 +78,10 @@ class RecaptchaV3 extends Component
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+        if(!$this->verify_ssl){ //default value should be true
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        }
         $curlData = curl_exec($curl);
         curl_close($curl);
         return Json::decode($curlData, true);
