@@ -2,7 +2,6 @@
 
 namespace Baha2Odeh\RecaptchaV3;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\helpers\Html;
@@ -44,9 +43,9 @@ class RecaptchaV3Widget extends InputWidget
     public $buttonText = 'Submit';
 
     /**
-     * @var RecaptchaV3
+     * @var RecaptchaV3 Resolved component instance.
      */
-    private $_component;
+    private $recaptcha;
 
     /**
      * @inheritdoc
@@ -56,7 +55,7 @@ class RecaptchaV3Widget extends InputWidget
     {
         parent::init();
 
-        $this->_component = Instance::ensure($this->component, RecaptchaV3::class);
+        $this->recaptcha = Instance::ensure($this->component, RecaptchaV3::class);
     }
 
     /**
@@ -64,14 +63,14 @@ class RecaptchaV3Widget extends InputWidget
      */
     public function run()
     {
-        $this->_component->registerScript($this->getView());
+        $this->recaptcha->registerScript($this->getView());
 
         $this->field->template = "{input}\n{error}";
 
-        $formId  = $this->field->form->id;
-        $inputId = Html::getInputId($this->model, $this->attribute);
-        $siteKey = Json::htmlEncode($this->_component->site_key);
-        $action  = Json::htmlEncode($this->actionName);
+        $formId   = $this->field->form->id;
+        $inputId  = Html::getInputId($this->model, $this->attribute);
+        $siteKey  = Json::htmlEncode($this->recaptcha->site_key);
+        $action   = Json::htmlEncode($this->actionName);
         $inputSel = Json::htmlEncode('#' . $inputId);
         $formSel  = Json::htmlEncode('#' . $formId);
 

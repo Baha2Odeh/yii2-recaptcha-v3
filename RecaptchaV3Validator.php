@@ -22,6 +22,9 @@ use yii\validators\Validator;
  * }
  * ```
  *
+ * Note: `$acceptance_score` uses snake_case to preserve backwards compatibility
+ * with existing model rules from before PSR conventions were adopted.
+ *
  * @author Bahaa Odeh <bw4@hotmail.it>
  * @since 1.0
  */
@@ -50,9 +53,9 @@ class RecaptchaV3Validator extends Validator
     public $action;
 
     /**
-     * @var RecaptchaV3
+     * @var RecaptchaV3 Resolved component instance.
      */
-    private $_component;
+    private $recaptcha;
 
     /**
      * @inheritdoc
@@ -62,7 +65,7 @@ class RecaptchaV3Validator extends Validator
     {
         parent::init();
 
-        $this->_component = Instance::ensure($this->component, RecaptchaV3::class);
+        $this->recaptcha = Instance::ensure($this->component, RecaptchaV3::class);
 
         if ($this->message === null) {
             $this->message = Yii::t('recaptchav3', 'The verification code is incorrect.');
@@ -74,7 +77,7 @@ class RecaptchaV3Validator extends Validator
      */
     protected function validateValue($value)
     {
-        $score = $this->_component->validateValue($value, $this->action);
+        $score = $this->recaptcha->validateValue($value, $this->action);
 
         if ($score === false) {
             return [$this->message, []];

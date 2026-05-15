@@ -22,11 +22,21 @@ use yii\web\View;
  * ],
  * ```
  *
+ * Note: public property names use snake_case to preserve backwards compatibility
+ * with existing configurations from before PSR conventions were adopted.
+ *
  * @author Bahaa Odeh <bw4@hotmail.it>
  * @since 1.0
  */
 class RecaptchaV3 extends Component
 {
+    // PSR-12 §4.2: constants must be declared before properties.
+
+    const SCRIPT_URL            = 'https://www.google.com/recaptcha/api.js';
+    const SCRIPT_ENTERPRISE_URL = 'https://www.google.com/recaptcha/enterprise.js';
+    const VERIFY_URL            = 'https://www.google.com/recaptcha/api/siteverify';
+    const VERIFY_ENTERPRISE_URL = 'https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments';
+
     /**
      * @var string The reCAPTCHA site key (public key shown to users).
      */
@@ -56,11 +66,6 @@ class RecaptchaV3 extends Component
      * @since 1.4
      */
     public $project_id;
-
-    const SCRIPT_URL            = 'https://www.google.com/recaptcha/api.js';
-    const SCRIPT_ENTERPRISE_URL = 'https://www.google.com/recaptcha/enterprise.js';
-    const VERIFY_URL            = 'https://www.google.com/recaptcha/api/siteverify';
-    const VERIFY_ENTERPRISE_URL = 'https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments';
 
     /**
      * @inheritdoc
@@ -152,8 +157,9 @@ class RecaptchaV3 extends Component
             return $this->curlEnterprise($params);
         }
 
-        // Remove null values before sending
-        $params = array_filter($params, static function ($v) { return $v !== null; });
+        $params = array_filter($params, static function ($v) {
+            return $v !== null;
+        });
 
         $ch = curl_init();
         curl_setopt_array($ch, [
@@ -222,7 +228,6 @@ class RecaptchaV3 extends Component
 
         $response = Json::decode($data, true);
 
-        // Normalize Enterprise response to match standard API format
         $valid = isset($response['tokenProperties']['valid']) && $response['tokenProperties']['valid'] === true;
 
         return [
