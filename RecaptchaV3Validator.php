@@ -1,44 +1,62 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bahaaodeh
- * Date: 12/22/18
- * Time: 7:23 PM
- */
 
 namespace Baha2Odeh\RecaptchaV3;
-
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\validators\Validator;
 
+/**
+ * RecaptchaV3Validator validates a reCAPTCHA v3 token stored in a model attribute.
+ *
+ * Usage in model rules:
+ * ```php
+ * public $captchaToken;
+ *
+ * public function rules()
+ * {
+ *     return [
+ *         [['captchaToken'], RecaptchaV3Validator::class, 'acceptance_score' => 0.5],
+ *     ];
+ * }
+ * ```
+ *
+ * Note: `$acceptance_score` uses snake_case to preserve backwards compatibility
+ * with existing model rules from before PSR conventions were adopted.
+ *
+ * @author Bahaa Odeh <bw4@hotmail.it>
+ * @since 1.0
+ */
 class RecaptchaV3Validator extends Validator
 {
     /**
-     * @var bool
+     * @var bool reCAPTCHA tokens must always be present; empty values are invalid.
      */
     public $skipOnEmpty = false;
 
-
     /**
-     * Recaptcha component
-     * @var string|array|RecaptchaV3
+     * @var string|array|RecaptchaV3 The component ID or configuration array for the [[RecaptchaV3]] component.
      */
     public $component = 'recaptchaV3';
 
+    /**
+     * @var float|null Minimum acceptable score (0.0–1.0). When `null`, any passing score is accepted.
+     */
+    public $acceptance_score;
 
     /**
-     * the minimum score for this request (0.0 - 1.0)
-     * @var null|int
+     * @var string|null Expected reCAPTCHA action name. When set, the action returned by Google
+     *   must match this value or validation will fail.
+     * @since 1.4
      */
-    public $acceptance_score = null;
+    public $action;
 
     /**
-     * @var RecaptchaV3
+     * @var RecaptchaV3 Resolved component instance.
      */
-    private $_component = null;
+    private $recaptcha;
+
     /**
      * @inheritdoc
      * @throws InvalidConfigException
@@ -46,11 +64,8 @@ class RecaptchaV3Validator extends Validator
     public function init()
     {
         parent::init();
-        $component = Instance::ensure($this->component, RecaptchaV3::class);
-        if ($component == null) {
-            throw new InvalidConfigException(Yii::t('recaptchav3', 'component is required.'));
-        }
-        $this->_component = $component;
+
+        $this->recaptcha = Instance::ensure($this->component, RecaptchaV3::class);
 
         if ($this->message === null) {
             $this->message = Yii::t('recaptchav3', 'The verification code is incorrect.');
@@ -62,14 +77,16 @@ class RecaptchaV3Validator extends Validator
      */
     protected function validateValue($value)
     {
-        $result = $this->_component->validateValue($value);
-        if($result === false){
+        $score = $this->recaptcha->validateValue($value, $this->action);
+
+        if ($score === false) {
             return [$this->message, []];
         }
-        if($this->acceptance_score !== null && $result < $this->acceptance_score){
+
+        if ($this->acceptance_score !== null && $score < $this->acceptance_score) {
             return [$this->message, []];
         }
+
         return null;
     }
-
 }

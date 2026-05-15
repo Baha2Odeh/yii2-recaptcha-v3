@@ -1,8 +1,15 @@
 {
     "name": "baha2odeh/yii2-recaptcha-v3",
-    "description": "Yii2 reCAPTCHA v3",
+    "description": "Google reCAPTCHA v3 extension for Yii2 — widget, validator, and application component",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","recaptcha v3","captcha","recaptcha 3","Yii2 recaptcha","Yii2 recaptcha 3","Yii2 recaptcha v3"],
+    "keywords": [
+        "yii2",
+        "extension",
+        "recaptcha",
+        "recaptcha v3",
+        "captcha",
+        "google recaptcha"
+    ],
     "license": "Apache-2.0",
     "authors": [
         {
@@ -11,7 +18,9 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.0"
+        "php": ">=5.6",
+        "ext-curl": "*",
+        "yiisoft/yii2": "~2.0"
     },
     "autoload": {
         "psr-4": {
